@@ -5,10 +5,6 @@ function initMap() {
 	document.getElementById('shipper-start-desktop').readOnly = true;
 	document.getElementById('shipper-start-mobile').readOnly = true;
 
-	var route_details = document.getElementById('route-details-desktop');
-	var loaded_total = document.getElementById('loaded-total-desktop');
-	var unloaded_total = document.getElementById('unloaded-total-desktop');
-
 	var mapOptions = {
 		center: {lat: 38.85, lng: -95.65},
 		zoom: 1,
@@ -28,6 +24,9 @@ function initMap() {
 	
 	document.getElementById('carrier-trigger-desktop').addEventListener('click', function() {
 		var geocoder = new google.maps.Geocoder();
+		var route_details = document.getElementById('route-details-desktop');
+		var loaded_total = document.getElementById('loaded-total-desktop');
+		var unloaded_total = document.getElementById('unloaded-total-desktop');
 		var address = document.getElementById('carrier-end-desktop').value;
 		geocoder.geocode({'address': address}, function(results, status) {
 			if (status === 'OK') {
@@ -49,6 +48,9 @@ function initMap() {
 
 	document.getElementById('shipper-trigger-desktop').addEventListener('click', function() {
 		var geocoder = new google.maps.Geocoder();
+		var route_details = document.getElementById('route-details-desktop');
+		var loaded_total = document.getElementById('loaded-total-desktop');
+		var unloaded_total = document.getElementById('unloaded-total-desktop');
 		var address = document.getElementById('shipper-end-desktop').value;
 		geocoder.geocode({'address': address}, function(results, status) {
 			if (status === 'OK') {
@@ -70,6 +72,9 @@ function initMap() {
 
 	document.getElementById('carrier-trigger-mobile').addEventListener('click', function() {
 		var geocoder = new google.maps.Geocoder();
+		var route_details = document.getElementById('route-details-c-mobile');
+		var loaded_total = document.getElementById('loaded-total-c-mobile');
+		var unloaded_total = document.getElementById('unloaded-total-c-mobile');
 		var address = document.getElementById('carrier-end-mobile').value;
 		geocoder.geocode({'address': address}, function(results, status) {
 			if (status === 'OK') {
@@ -91,6 +96,9 @@ function initMap() {
 
 	document.getElementById('shipper-trigger-mobile').addEventListener('click', function() {
 		var geocoder = new google.maps.Geocoder();
+		var route_details = document.getElementById('route-details-s-mobile');
+		var loaded_total = document.getElementById('loaded-total-s-mobile');
+		var unloaded_total = document.getElementById('unloaded-total-s-mobile');
 		var address = document.getElementById('shipper-end-mobile').value;
 		geocoder.geocode({'address': address}, function(results, status) {
 			if (status === 'OK') {
@@ -388,9 +396,9 @@ function getDirections(map, directionsService, directionsDisplay, address, route
 						}
 					}
 
-					route_details.innerHTML = "<div id=\"route-details\" data-w-id=\"34af2989-14bc-d845-b530-a2bd6b6af1d9\" class=\"text-body text-left margin-top-15\">"+innerHTML+"</div>"
-					loaded_total.innerHTML = "<h4 id=\"loaded-total\" class=\"subheading margins-0 text-bulky-blue\">"+round(loadedTotal*0.000621371192, 1)+" mi</h4>"
-					unloaded_total.innerHTML = "<div id=\"unloaded-total\" class=\"loading-total-distance text-bulky-red\">"+round(unloadedTotal*0.000621371192,1)+" mi</div>"
+					route_details.innerHTML = "<div data-w-id=\"34af2989-14bc-d845-b530-a2bd6b6af1d9\" class=\"text-body text-left margin-top-15\">"+innerHTML+"</div>"
+					loaded_total.innerHTML = "<h4 class=\"subheading margins-0 text-bulky-blue\">"+round(loadedTotal*0.000621371192, 1)+" mi</h4>"
+					unloaded_total.innerHTML = "<div class=\"loading-total-distance text-bulky-red\">"+round(unloadedTotal*0.000621371192,1)+" mi</div>"
 
 					var my_route = result.routes[0];
 
