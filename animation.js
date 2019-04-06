@@ -72,7 +72,7 @@ function initMap() {
 
 	document.getElementById('carrier-trigger-mobile').addEventListener('click', function() {
 		var geocoder = new google.maps.Geocoder();
-		var route_details = document.getElementById('route-details-c-mobile');
+		var route_details = document.getElementById('route-details-mobile');
 		var loaded_total = document.getElementById('loaded-total-c-mobile');
 		var unloaded_total = document.getElementById('unloaded-total-c-mobile');
 		var address = document.getElementById('carrier-end-mobile').value;
@@ -96,7 +96,7 @@ function initMap() {
 
 	document.getElementById('shipper-trigger-mobile').addEventListener('click', function() {
 		var geocoder = new google.maps.Geocoder();
-		var route_details = document.getElementById('route-details-s-mobile');
+		var route_details = document.getElementById('route-details-mobile');
 		var loaded_total = document.getElementById('loaded-total-s-mobile');
 		var unloaded_total = document.getElementById('unloaded-total-s-mobile');
 		var address = document.getElementById('shipper-end-mobile').value;
