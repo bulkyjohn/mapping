@@ -491,9 +491,9 @@ function getShipperDirections(map, directionsService, directionsDisplay, address
 
 			num_carriers = Math.floor(Math.random() * 3) + 1
 
-			est_total_low = d*(Math.random() + 2.01)
+			est_total_low = d*(Math.random()/2 + 2.01)
 
-			est_total_high = d*(Math.random() + 3.13)
+			est_total_high = d*(Math.random()/2 + 2.61)
 			
 			var request = {
 				origin: new google.maps.LatLng(startLat,startLng),
@@ -507,7 +507,7 @@ function getShipperDirections(map, directionsService, directionsDisplay, address
 					computeTotalDistance(result);
 
 					number_of_carriers.innerHTML = "<div id=\"number-of-carriers-desktop\" class=\"number-of-carriers text-bulky-blue\">" + num_carriers + "</div>"
-					estimated_total.innerHTML = "<div id=\"estimated-total-desktop\" class=\"estimated-total text-bulky-blue\">$"+est_total_low+" - $"+est_total_high+"</div>"
+					estimated_total.innerHTML = "<div id=\"estimated-total-desktop\" class=\"estimated-total text-bulky-blue\">$"+round(est_total_low)+" - $"+round(est_total_high)+"</div>"
 
 					var my_route = result.routes[0];
 
@@ -526,6 +526,49 @@ function getShipperDirections(map, directionsService, directionsDisplay, address
 						map: map
 					});
 
+					// autoRefresh(map, result);
+
+					var colors = ["#f37b6e", "#32aef2", "#f37b6e", "#32aef2", "#f37b6e", "#32aef2"];
+					var strokeWeight = [6,2,6,2,6,2]
+					var polylines = [];
+					var bounds = new google.maps.LatLngBounds();
+					for (var i = 0; i < polylines.length; i++) {
+						polylines[i].setMap(null);
+					}
+					var legs = result.routes[0].legs;
+					for (i = 0; i < legs.length; i++) {
+						var steps = legs[i].steps;
+						for (j = 0; j < steps.length; j++) {
+							var nextSegment = steps[j].path;
+							
+								var stepPolyline = new google.maps.Polyline({
+									path: [],
+									geodesic : true,
+									strokeColor: colors[i],
+									strokeOpacity: 1.0,
+									strokeWeight: strokeWeight[i],
+									editable: false,
+									map:map
+							});
+
+								var stepPolylineGlow = new google.maps.Polyline({
+									path: [],
+									geodesic : true,
+									strokeColor: '#FFFFFF',
+									strokeOpacity: 0.4,
+									strokeWeight: (strokeWeight[i]+1),
+									editable: false,
+									map:map
+								});
+							
+							for (k = 0; k < nextSegment.length; k++) {
+								stepPolyline.getPath().push(nextSegment[k]);
+								bounds.extend(nextSegment[k]);
+							}
+							polylines.push(stepPolyline);
+							stepPolyline.setMap(map);
+						}
+					}
 					map.fitBounds(bounds);
 
 				}
