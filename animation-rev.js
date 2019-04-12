@@ -507,8 +507,8 @@ function getShipperDirections(map, directionsService, directionsDisplay, address
 					computeTotalDistance(result);
 
 					number_of_carriers.innerHTML = "<div id=\"number-of-carriers-desktop\" class=\"number-of-carriers text-bulky-blue\">" + num_carriers + "</div>"
-					estimated_total.innerHTML = "<div id=\"estimated-total-desktop\" class=\"estimated-total text-bulky-blue\">$" + round(d*est_total_low) + " - $"+round(d*est_total_high)+"</div>"
-					result_details.innerHTML = "<div id=\"result-details-desktop\" data-w-id=\"af6a265f-5d07-8ee6-961c-2794bb2d18b6\" class=\"shipper-result-details text-body text-left margin-top-15\">Total Distance: " + d + " mi<br><br>" + "Low $/mi: " + round(est_total_low,2) + "<br>High $/mi: " + round(est_total_high,2) + "</div>"
+					estimated_total.innerHTML = "<div id=\"estimated-total-desktop\" class=\"estimated-total text-bulky-blue\">$" + round(d*low_cost_mile) + " - $"+round(d*high_cost_mile)+"</div>"
+					result_details.innerHTML = "<div id=\"result-details-desktop\" data-w-id=\"af6a265f-5d07-8ee6-961c-2794bb2d18b6\" class=\"shipper-result-details text-body text-left margin-top-15\">Total Distance: " + d + " mi<br><br>" + "Low $/mi: " + round(low_cost_mile,2) + "<br>High $/mi: " + round(high_cost_mile,2) + "</div>"
 
 					var my_route = result.routes[0];
 
