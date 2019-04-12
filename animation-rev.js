@@ -58,7 +58,7 @@ function initMap() {
 				var map = new google.maps.Map(document.getElementById("map-desktop"), mapOptions);
 				directionsDisplay.setMap(map, address);
 				searchingAnimation(map, address);
-				setTimeout(func, 10000);
+				setTimeout(func, 9000);
 				function func() {
 					getShipperDirections(map, directionsService, directionsDisplay, address, result_details, number_of_carriers, estimated_total);
 				}
@@ -72,7 +72,7 @@ function initMap() {
 
 	document.getElementById('carrier-trigger-mobile').addEventListener('click', function() {
 		var geocoder = new google.maps.Geocoder();
-		var route_details = document.getElementById('route-details-mobile');
+		var route_details = document.getElementById('details-mobile');
 		var loaded_total = document.getElementById('loaded-total-c-mobile');
 		var unloaded_total = document.getElementById('unloaded-total-c-mobile');
 		var address = document.getElementById('carrier-end-mobile').value;
@@ -96,7 +96,7 @@ function initMap() {
 
 	document.getElementById('shipper-trigger-mobile').addEventListener('click', function() {
 		var geocoder = new google.maps.Geocoder();
-		//var route_details = document.getElementById('route-details-mobile');
+		var result_details = document.getElementById('details-mobile');
 		var number_of_carriers = document.getElementById('number-of-carriers-mobile');
 		var estimated_total = document.getElementById('estimated-total-mobile');
 		var address = document.getElementById('shipper-end-mobile').value;
@@ -106,9 +106,9 @@ function initMap() {
 				var map = new google.maps.Map(document.getElementById("map-s-mobile"), mapOptions);
 				directionsDisplay.setMap(map, address);
 				searchingAnimation(map, address);
-				setTimeout(func, 10000);
+				setTimeout(func, 9000);
 				function func() {
-					getShipperDirections(map, directionsService, directionsDisplay, address, number_of_carriers, estimated_total);
+					getShipperDirections(map, directionsService, directionsDisplay, address, result_details, number_of_carriers, estimated_total);
 				}
 			} else if (status === "INVALID_REQUEST") {
 				swal("Invalid Location","Please enter a different destination.","warning");
@@ -508,7 +508,7 @@ function getShipperDirections(map, directionsService, directionsDisplay, address
 
 					number_of_carriers.innerHTML = "<div id=\"number-of-carriers-desktop\" class=\"number-of-carriers text-bulky-blue\">" + num_carriers + "</div>"
 					estimated_total.innerHTML = "<div id=\"estimated-total-desktop\" class=\"estimated-total text-bulky-blue\">$" + round(d*low_cost_mile) + " - $"+round(d*high_cost_mile)+"</div>"
-					result_details.innerHTML = "<div id=\"result-details-desktop\" data-w-id=\"af6a265f-5d07-8ee6-961c-2794bb2d18b6\" class=\"shipper-result-details text-body text-left margin-top-15\">Total Distance: " + d + " mi<br><br>" + "Low $/mi: " + round(low_cost_mile,2) + "<br>High $/mi: " + round(high_cost_mile,2) + "</div>"
+					result_details.innerHTML = "<div id=\"result-details-desktop\" data-w-id=\"af6a265f-5d07-8ee6-961c-2794bb2d18b6\" class=\"shipper-result-details text-body text-left margin-top-15\">Total Distance: " + round(d,1) + " mi<br><br>" + "Low cost/mile: $" + round(low_cost_mile,2) + "<br>High cost/mile: $" + round(high_cost_mile,2) + "</div>"
 
 					var my_route = result.routes[0];
 
