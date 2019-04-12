@@ -48,7 +48,7 @@ function initMap() {
 
 	document.getElementById('shipper-trigger-desktop').addEventListener('click', function() {
 		var geocoder = new google.maps.Geocoder();
-		//var route_details = document.getElementById('route-details-desktop');
+		var result_details = document.getElementById('result-details-desktop');
 		var number_of_carriers = document.getElementById('number-of-carriers-desktop');
 		var estimated_total = document.getElementById('estimated-total-desktop');
 		var address = document.getElementById('shipper-end-desktop').value;
@@ -60,7 +60,7 @@ function initMap() {
 				searchingAnimation(map, address);
 				setTimeout(func, 10000);
 				function func() {
-					getShipperDirections(map, directionsService, directionsDisplay, address, number_of_carriers, estimated_total);
+					getShipperDirections(map, directionsService, directionsDisplay, address, result_details, number_of_carriers, estimated_total);
 				}
 			} else if (status === "INVALID_REQUEST") {
 				swal("Invalid Location","Please enter a different destination.","warning");
@@ -476,7 +476,7 @@ function getDirections(map, directionsService, directionsDisplay, address, route
 	});	
 }
 
-function getShipperDirections(map, directionsService, directionsDisplay, address, number_of_carriers, estimated_total) {
+function getShipperDirections(map, directionsService, directionsDisplay, address, result_details, number_of_carriers, estimated_total) {
 	var geocoder = new google.maps.Geocoder();
 	geocoder.geocode({'address': address}, function(results, status) {
 		if (status === 'OK') {
@@ -491,9 +491,9 @@ function getShipperDirections(map, directionsService, directionsDisplay, address
 
 			num_carriers = Math.floor(Math.random() * 3) + 1
 
-			est_total_low = d*(Math.random()/2 + 2.01)
+			low_cost_mile = Math.random()/2 + 2.01
 
-			est_total_high = d*(Math.random()/2 + 2.61)
+			high_cost_mile = Math.random()/2 + 2.61
 			
 			var request = {
 				origin: new google.maps.LatLng(startLat,startLng),
@@ -507,7 +507,8 @@ function getShipperDirections(map, directionsService, directionsDisplay, address
 					computeTotalDistance(result);
 
 					number_of_carriers.innerHTML = "<div id=\"number-of-carriers-desktop\" class=\"number-of-carriers text-bulky-blue\">" + num_carriers + "</div>"
-					estimated_total.innerHTML = "<div id=\"estimated-total-desktop\" class=\"estimated-total text-bulky-blue\">$"+round(est_total_low)+" - $"+round(est_total_high)+"</div>"
+					estimated_total.innerHTML = "<div id=\"estimated-total-desktop\" class=\"estimated-total text-bulky-blue\">$" + round(d*est_total_low) + " - $"+round(d*est_total_high)+"</div>"
+					result_details.innerHTML = "<div id=\"result-details-desktop\" data-w-id=\"af6a265f-5d07-8ee6-961c-2794bb2d18b6\" class=\"shipper-result-details text-body text-left margin-top-15\">Total Distance: " + d + " mi<br><br>" + "Low $/mi: " + round(est_total_low,2) + "<br>High $/mi: " + round(est_total_high,2) + "</div>"
 
 					var my_route = result.routes[0];
 
