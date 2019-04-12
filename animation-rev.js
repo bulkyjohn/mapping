@@ -506,7 +506,7 @@ function getShipperDirections(map, directionsService, directionsDisplay, address
 					directionsDisplay.setDirections(result);
 					computeTotalDistance(result);
 
-					document.getElementById('label.mobile').innerHTML = "<div id=\"label-mobile\" class=\"text-body text-large\">Match Details</div>"
+					document.getElementById('label-mobile').innerHTML = "<div id=\"label-mobile\" class=\"text-body text-large\">Match Details</div>"
 					number_of_carriers.innerHTML = "<div id=\"number-of-carriers-desktop\" class=\"number-of-carriers text-bulky-blue\">" + num_carriers + "</div>"
 					estimated_total.innerHTML = "<div id=\"estimated-total-desktop\" class=\"estimated-total text-bulky-blue\">$" + round(d*low_cost_mile) + " - $"+round(d*high_cost_mile)+"</div>"
 					result_details.innerHTML = "<div data-w-id=\"af6a265f-5d07-8ee6-961c-2794bb2d18b6\" class=\"shipper-result-details text-body text-left margin-top-15\">Total Distance: " + round(d,1)/1.60934 + " mi<br><br>" + "Low cost/mile: $" + round(low_cost_mile,2) + "<br>High cost/mile: $" + round(high_cost_mile,2) + "</div>"
