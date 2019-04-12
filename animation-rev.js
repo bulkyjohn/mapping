@@ -34,7 +34,7 @@ function initMap() {
 				var map = new google.maps.Map(document.getElementById("map-desktop"), mapOptions);
 				directionsDisplay.setMap(map, address);
 				searchingAnimation(map, address);
-				setTimeout(func, 10000);
+				setTimeout(func, 9000);
 				function func() {
 					getDirections(map, directionsService, directionsDisplay, address, route_details, loaded_total, unloaded_total);
 				}
@@ -82,7 +82,7 @@ function initMap() {
 				var map = new google.maps.Map(document.getElementById("map-c-mobile"), mapOptions);
 				directionsDisplay.setMap(map, address);
 				searchingAnimation(map, address);
-				setTimeout(func, 10000);
+				setTimeout(func, 9000);
 				function func() {
 					getDirections(map, directionsService, directionsDisplay, address, route_details, loaded_total, unloaded_total);
 				}
