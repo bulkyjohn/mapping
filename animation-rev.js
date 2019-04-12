@@ -367,6 +367,8 @@ function getDirections(map, directionsService, directionsDisplay, address, route
 					var loadedTotal = 0;
 					var unloadedTotal = 0;
 					computeTotalDistance(result);
+					
+
 					if (route_details.id == "details-mobile") {
 						for (var k = 0; k < waypts.length; k++) {
 							if (k == 0 && k == ((waypts.length)-1)) {
@@ -376,7 +378,7 @@ function getDirections(map, directionsService, directionsDisplay, address, route
 								loadedTotal += result.routes[0].legs[k+1].distance.value;
 							} else if (k == 0) {
 								unloadedTotal += result.routes[0].legs[k].distance.value;
-								innerHTML += "Deadhead from Las Vegas, NV to " + waypts[k].location + " <span class=\"text-bulky-red text-semi-bold\">("+result.routes[0].legs[k].distance.text+")"+"</span><br>"
+								innerHTML += "Deadhead from Las Vegas, NV to " + waypts[k].location + " <span class=\"text-bulky-red text-semi-bold\"><br>("+result.routes[0].legs[k].distance.text+")"+"</span><br>"
 								innerHTML += "Loaded from "+ waypts[k].location +" to " + waypts[k+1].location + " <span class=\"text-bulky-blue text-semi-bold\"><br>("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
 							} else if (k == ((waypts.length)-1)) {
 								if (Math.round(k/2)==k/2) {
@@ -426,6 +428,7 @@ function getDirections(map, directionsService, directionsDisplay, address, route
 							}
 						}
 					}
+
 					route_details.innerHTML = "<div data-w-id=\"34af2989-14bc-d845-b530-a2bd6b6af1d9\" class=\"text-body text-left margin-top-15\">"+innerHTML+"</div>"
 					loaded_total.innerHTML = "<h4 class=\"subheading margins-0 text-bulky-blue\">"+round(loadedTotal*0.000621371192, 1)+" mi</h4>"
 					unloaded_total.innerHTML = "<div class=\"loading-total-distance text-bulky-red\">"+round(unloadedTotal*0.000621371192,1)+" mi</div>"
@@ -539,7 +542,7 @@ function getShipperDirections(map, directionsService, directionsDisplay, address
 					document.getElementById('label-mobile').innerHTML = "<div id=\"label-mobile\" class=\"text-body text-large\">Match Details</div>"
 					number_of_carriers.innerHTML = "<div id=\"number-of-carriers-desktop\" class=\"number-of-carriers text-bulky-blue\">" + num_carriers + "</div>"
 					estimated_total.innerHTML = "<div id=\"estimated-total-desktop\" class=\"estimated-total text-bulky-blue\">$" + round(d*low_cost_mile) + " - $"+round(d*high_cost_mile)+"</div>"
-					result_details.innerHTML = "<div data-w-id=\"34af2989-14bc-d845-b530-a2bd6b6af1d9\" class=\"text-body text-left margin-top-15\">Total Distance: " + round(d/1.60934,1) + " mi<br><br>" + "Low cost/mile: $" + parseFloat(round(low_cost_mile,2).toFixed(2)  + "<br>High cost/mile: $" + parseFloat(round(high_cost_mile,2).toFixed(2) + "</div>"
+					result_details.innerHTML = "<div data-w-id=\"34af2989-14bc-d845-b530-a2bd6b6af1d9\" class=\"text-body text-left margin-top-15\">Total Distance: " + round(d/1.60934,1) + " mi<br><br>" + "Low cost/mile: $" + parseFloat(round(low_cost_mile,2).toFixed(2))  + "<br>High cost/mile: $" + parseFloat(round(high_cost_mile,2).toFixed(2)) + "</div>"
 
 					var my_route = result.routes[0];
 
