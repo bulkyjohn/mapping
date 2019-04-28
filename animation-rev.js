@@ -1,9 +1,4 @@
 function initMap() {
-	
-	document.getElementById('carrier-start-desktop').readOnly = true;
-	document.getElementById('carrier-start-mobile').readOnly = true;
-	document.getElementById('shipper-start-desktop').readOnly = true;
-	document.getElementById('shipper-start-mobile').readOnly = true;
 
 	var mapOptions = {
 		center: {lat: 38.85, lng: -95.65},
@@ -27,21 +22,57 @@ function initMap() {
 		var route_details = document.getElementById('route-details-desktop');
 		var loaded_total = document.getElementById('loaded-total-desktop');
 		var unloaded_total = document.getElementById('unloaded-total-desktop');
+		var start_address = document.getElementById('carrier-start-desktop').value;
 		var end_address = document.getElementById('carrier-end-desktop').value;
-		geocoder.geocode({'address': end_address}, function(results, status) {
-			if (status === 'OK') {
-				document.getElementById('carrier-submit-desktop').click();
-				var map = new google.maps.Map(document.getElementById("map-desktop"), mapOptions);
-				directionsDisplay.setMap(map, end_address);
-				searchingAnimation(map, end_address);
-				setTimeout(func, 9000);
-				function func() {
-					getDirections(map, directionsService, directionsDisplay, end_address, route_details, loaded_total, unloaded_total);
-				}
-			} else if (status === "INVALID_REQUEST") {
-				swal("Invalid Location","Please enter a different destination.","warning");
+
+		geocoder.geocode({'address': start_address}, function(start_results, start_status) {
+			if (start_status === 'OK') {
+				var start_lat = start_results[0].geometry.location.lat();
+				var start_lng = start_results[0].geometry.location.lng();
+				start_address = "";
+				var startAddressComponents = start_results[0].address_components;
+				startAddressComponents.forEach(addrComp => {
+					if (addrComp.types[0] == "locality") {
+						start_address += addrComp.long_name;
+					}
+					if (addrComp.types[0] == "administrative_area_level_1") {
+						start_address += ", " + addrComp.short_name;
+					}
+				});
+
+				geocoder.geocode({'address': end_address}, function(results, status) {
+					if (status === 'OK') {
+						var end_lat = results[0].geometry.location.lat();
+						var end_lng = results[0].geometry.location.lng();
+						end_address = "";
+						addressComponents = results[0].address_components;
+						addressComponents.forEach(addrComp => {
+							if (addrComp.types[0] == "locality") {
+								end_address += addrComp.long_name;
+							}
+							if (addrComp.types[0] == "administrative_area_level_1") {
+								end_address += ", " + addrComp.short_name;
+							}
+						});
+
+						document.getElementById('carrier-submit-desktop').click();
+						var map = new google.maps.Map(document.getElementById("map-desktop"), mapOptions);
+						directionsDisplay.setMap(map, start_address, end_address);
+						searchingAnimation(map, start_lat, start_lng, end_lat, end_lng);
+						setTimeout(func, 9000);
+						function func() {
+							getDirections(map, directionsService, directionsDisplay, start_address, start_lat, start_lng, end_address, end_lat, end_lng, route_details, loaded_total, unloaded_total);
+						}
+					} else if (status === "INVALID_REQUEST") {
+						swal("Invalid End Location","Please enter a different destination.","warning");
+					} else {
+						alert('Geocode was not successful for the following reason: ' + status);
+					}
+				});
+			} else if (start_status === "INVALID_REQUEST") {
+				swal("Invalid Start Location","Please enter a different starting location.","warning");
 			} else {
-				alert('Geocode was not successful for the following reason: ' + status);
+				alert('Geocode was not successful for the following reason: ' + start_status);
 			}
 		});
 	});
@@ -51,21 +82,57 @@ function initMap() {
 		var result_details = document.getElementById('result-details-desktop');
 		var number_of_carriers = document.getElementById('number-of-carriers-desktop');
 		var estimated_total = document.getElementById('estimated-total-desktop');
+		var start_address = document.getElementById('shipper-start-desktop').value;
 		var end_address = document.getElementById('shipper-end-desktop').value;
-		geocoder.geocode({'address': end_address}, function(results, status) {
-			if (status === 'OK') {
-				document.getElementById('shipper-submit-desktop').click();
-				var map = new google.maps.Map(document.getElementById("map-desktop"), mapOptions);
-				directionsDisplay.setMap(map, end_address);
-				searchingAnimation(map, end_address);
-				setTimeout(func, 9000);
-				function func() {
-					getShipperDirections(map, directionsService, directionsDisplay, end_address, result_details, number_of_carriers, estimated_total);
-				}
-			} else if (status === "INVALID_REQUEST") {
-				swal("Invalid Location","Please enter a different destination.","warning");
+
+		geocoder.geocode({'address': start_address}, function(start_results, start_status) {
+			if (start_status === 'OK') {
+				var start_lat = start_results[0].geometry.location.lat();
+				var start_lng = start_results[0].geometry.location.lng();
+				start_address = "";
+				var startAddressComponents = start_results[0].address_components;
+				startAddressComponents.forEach(addrComp => {
+					if (addrComp.types[0] == "locality") {
+						start_address += addrComp.long_name;
+					}
+					if (addrComp.types[0] == "administrative_area_level_1") {
+						start_address += ", " + addrComp.short_name;
+					}
+				});
+
+				geocoder.geocode({'address': end_address}, function(results, status) {
+					if (status === 'OK') {
+						var end_lat = results[0].geometry.location.lat();
+						var end_lng = results[0].geometry.location.lng();
+						end_address = "";
+						addressComponents = results[0].address_components;
+						addressComponents.forEach(addrComp => {
+							if (addrComp.types[0] == "locality") {
+								end_address += addrComp.long_name;
+							}
+							if (addrComp.types[0] == "administrative_area_level_1") {
+								end_address += ", " + addrComp.short_name;
+							}
+						});
+
+						document.getElementById('shipper-submit-desktop').click();
+						var map = new google.maps.Map(document.getElementById("map-desktop"), mapOptions);
+						directionsDisplay.setMap(map, start_address, end_address);
+						searchingAnimation(map, start_lat, start_lng, end_lat, end_lng);
+						setTimeout(func, 9000);
+						function func() {
+							getShipperDirections(map, directionsService, directionsDisplay, start_address, start_lat, start_lng, end_address, end_lat, end_lng, result_details, number_of_carriers, estimated_total);
+						}
+					} else if (status === "INVALID_REQUEST") {
+						swal("Invalid End Location","Please enter a different destination.","warning");
+					} else {
+						alert('Geocode was not successful for the following reason: ' + status);
+					}
+				});
+			} else if (start_status === "INVALID_REQUEST") {
+				swal("Invalid Start Location","Please enter a different starting location.","warning");
 			} else {
-				alert('Geocode was not successful for the following reason: ' + status);
+				alert('Geocode was not successful for the following reason: ' + start_status);
 			}
 		});
 	});
@@ -75,21 +142,57 @@ function initMap() {
 		var route_details = document.getElementById('details-mobile');
 		var loaded_total = document.getElementById('loaded-total-c-mobile');
 		var unloaded_total = document.getElementById('unloaded-total-c-mobile');
+		var start_address = document.getElementById('carrier-start-mobile').value;
 		var end_address = document.getElementById('carrier-end-mobile').value;
-		geocoder.geocode({'address': end_address}, function(results, status) {
-			if (status === 'OK') {
-				document.getElementById('carrier-submit-mobile').click();
-				var map = new google.maps.Map(document.getElementById("map-c-mobile"), mapOptions);
-				directionsDisplay.setMap(map, end_address);
-				searchingAnimation(map, end_address);
-				setTimeout(func, 9000);
-				function func() {
-					getDirections(map, directionsService, directionsDisplay, end_address, route_details, loaded_total, unloaded_total);
-				}
-			} else if (status === "INVALID_REQUEST") {
-				swal("Invalid Location","Please enter a different destination.","warning");
+
+		geocoder.geocode({'address': start_address}, function(start_results, start_status) {
+			if (start_status === 'OK') {
+				var start_lat = start_results[0].geometry.location.lat();
+				var start_lng = start_results[0].geometry.location.lng();
+				start_address = "";
+				var startAddressComponents = start_results[0].address_components;
+				startAddressComponents.forEach(addrComp => {
+					if (addrComp.types[0] == "locality") {
+						start_address += addrComp.long_name;
+					}
+					if (addrComp.types[0] == "administrative_area_level_1") {
+						start_address += ", " + addrComp.short_name;
+					}
+				});
+
+				geocoder.geocode({'address': end_address}, function(results, status) {
+					if (status === 'OK') {
+						var end_lat = results[0].geometry.location.lat();
+						var end_lng = results[0].geometry.location.lng();
+						end_address = "";
+						addressComponents = results[0].address_components;
+						addressComponents.forEach(addrComp => {
+							if (addrComp.types[0] == "locality") {
+								end_address += addrComp.long_name;
+							}
+							if (addrComp.types[0] == "administrative_area_level_1") {
+								end_address += ", " + addrComp.short_name;
+							}
+						});
+						
+						document.getElementById('carrier-submit-mobile').click();
+						var map = new google.maps.Map(document.getElementById("map-c-mobile"), mapOptions);
+						directionsDisplay.setMap(map, start_address, end_address);
+						searchingAnimation(map, start_lat, start_lng, end_lat, end_lng);
+						setTimeout(func, 9000);
+						function func() {
+							getDirections(map, directionsService, directionsDisplay, start_address, start_lat, start_lng, end_address, end_lat, end_lng, route_details, loaded_total, unloaded_total);
+						}
+					} else if (status === "INVALID_REQUEST") {
+						swal("Invalid End Location","Please enter a different destination.","warning");
+					} else {
+						alert('Geocode was not successful for the following reason: ' + status);
+					}
+				});
+			} else if (start_status === "INVALID_REQUEST") {
+				swal("Invalid Start Location","Please enter a different starting location.","warning");
 			} else {
-				alert('Geocode was not successful for the following reason: ' + status);
+				alert('Geocode was not successful for the following reason: ' + start_status);
 			}
 		});
 	});
@@ -99,21 +202,57 @@ function initMap() {
 		var result_details = document.getElementById('details-mobile');
 		var number_of_carriers = document.getElementById('number-of-carriers-mobile');
 		var estimated_total = document.getElementById('estimated-total-mobile');
+		var start_address = document.getElementById('shipper-start-mobile').value;
 		var end_address = document.getElementById('shipper-end-mobile').value;
-		geocoder.geocode({'address': end_address}, function(results, status) {
-			if (status === 'OK') {
-				document.getElementById('shipper-submit-mobile').click();
-				var map = new google.maps.Map(document.getElementById("map-s-mobile"), mapOptions);
-				directionsDisplay.setMap(map, end_address);
-				searchingAnimation(map, end_address);
-				setTimeout(func, 9000);
-				function func() {
-					getShipperDirections(map, directionsService, directionsDisplay, end_address, result_details, number_of_carriers, estimated_total);
-				}
-			} else if (status === "INVALID_REQUEST") {
-				swal("Invalid Location","Please enter a different destination.","warning");
+
+		geocoder.geocode({'address': start_address}, function(start_results, start_status) {
+			if (start_status === 'OK') {
+				var start_lat = start_results[0].geometry.location.lat();
+				var start_lng = start_results[0].geometry.location.lng();
+				start_address = "";
+				var startAddressComponents = start_results[0].address_components;
+				startAddressComponents.forEach(addrComp => {
+					if (addrComp.types[0] == "locality") {
+						start_address += addrComp.long_name;
+					}
+					if (addrComp.types[0] == "administrative_area_level_1") {
+						start_address += ", " + addrComp.short_name;
+					}
+				});
+
+				geocoder.geocode({'address': end_address}, function(results, status) {
+					if (status === 'OK') {
+						var end_lat = results[0].geometry.location.lat();
+						var end_lng = results[0].geometry.location.lng();
+						end_address = "";
+						addressComponents = results[0].address_components;
+						addressComponents.forEach(addrComp => {
+							if (addrComp.types[0] == "locality") {
+								end_address += addrComp.long_name;
+							}
+							if (addrComp.types[0] == "administrative_area_level_1") {
+								end_address += ", " + addrComp.short_name;
+							}
+						});
+
+						document.getElementById('shipper-submit-mobile').click();
+						var map = new google.maps.Map(document.getElementById("map-s-mobile"), mapOptions);
+						directionsDisplay.setMap(map, start_address, end_address);
+						searchingAnimation(map, start_lat, start_lng, end_lat, end_lng);
+						setTimeout(func, 9000);
+						function func() {
+							getShipperDirections(map, directionsService, directionsDisplay, start_address, start_lat, start_lng, end_address, end_lat, end_lng, result_details, number_of_carriers, estimated_total);
+						}
+					} else if (status === "INVALID_REQUEST") {
+						swal("Invalid End Location","Please enter a different destination.","warning");
+					} else {
+						alert('Geocode was not successful for the following reason: ' + status);
+					}
+				});
+			} else if (start_status === "INVALID_REQUEST") {
+				swal("Invalid Start Location","Please enter a different starting location.","warning");
 			} else {
-				alert('Geocode was not successful for the following reason: ' + status);
+				alert('Geocode was not successful for the following reason: ' + start_status);
 			}
 		});
 	});
@@ -122,18 +261,28 @@ function initMap() {
 }
 
 function activatePlacesSearch(){
-	var CarrierInputDesktop = document.getElementById('carrier-end-desktop');
-	var ShipperInputDesktop = document.getElementById('shipper-end-desktop');
-	var CarrierInputMobile = document.getElementById('carrier-end-mobile');
-	var ShipperInputMobile = document.getElementById('shipper-end-mobile');
+	var CarrierStartInputDesktop = document.getElementById('carrier-start-desktop');
+	var ShipperStartInputDesktop = document.getElementById('shipper-start-desktop');
+	var CarrierStartInputMobile = document.getElementById('carrier-start-mobile');
+	var ShipperStartInputMobile = document.getElementById('shipper-start-mobile');
+
+	var CarrierEndInputDesktop = document.getElementById('carrier-end-desktop');
+	var ShipperEndInputDesktop = document.getElementById('shipper-end-desktop');
+	var CarrierEndInputMobile = document.getElementById('carrier-end-mobile');
+	var ShipperEndInputMobile = document.getElementById('shipper-end-mobile');
 	var options = {
 		types: ['(cities)'],
 		componentRestrictions: {country: "us"}
 	};
-	var autocompleteCarrier = new google.maps.places.Autocomplete(CarrierInputDesktop, options);
-	var autocompleteShipper = new google.maps.places.Autocomplete(ShipperInputDesktop, options);
-	var autocompleteCarrier = new google.maps.places.Autocomplete(CarrierInputMobile, options);
-	var autocompleteShipper = new google.maps.places.Autocomplete(ShipperInputMobile, options);
+	var autocompleteCarrier = new google.maps.places.Autocomplete(CarrierStartInputDesktop, options);
+	var autocompleteShipper = new google.maps.places.Autocomplete(ShipperStartInputDesktop, options);
+	var autocompleteCarrier = new google.maps.places.Autocomplete(CarrierStartInputMobile, options);
+	var autocompleteShipper = new google.maps.places.Autocomplete(ShipperStartInputMobile, options);
+
+	var autocompleteCarrier = new google.maps.places.Autocomplete(CarrierEndInputDesktop, options);
+	var autocompleteShipper = new google.maps.places.Autocomplete(ShipperEndInputDesktop, options);
+	var autocompleteCarrier = new google.maps.places.Autocomplete(CarrierEndInputMobile, options);
+	var autocompleteShipper = new google.maps.places.Autocomplete(ShipperEndInputMobile, options);
 }
 
 function getLatLng(addr, f){
@@ -148,32 +297,17 @@ function getLatLng(addr, f){
 	return -1;
 }
 
-function searchingAnimation(map, end_address){
-	var geocoder = new google.maps.Geocoder();
-	geocoder.geocode({'address': end_address}, function(results, status) {
-		if (status === 'OK') {
-			destination = results[0].address_components[0].short_name + ", " + results[0].address_components[2].short_name;
-			endHubReq = false;
-			startLat = 36.1699;
-			startLng = -115.1398;
-			endLat = results[0].geometry.location.lat();
-			endLng = results[0].geometry.location.lng();
-			
-			middleLat = (startLat + endLat)/2
-			middleLng = (startLng + endLng)/2
-			
-			setTimeout(function() { newZoom(map, 3); }, 1000);
-			setTimeout(function() { moveToLocation(map, startLat, startLng); }, 2500);
-			setTimeout(function() { newZoom(map, 5); }, 4000);
-			setTimeout(function() { moveToLocation(map, middleLat, middleLng); }, 5500);
-			setTimeout(function() { newZoom(map, 4); }, 7000);
-			setTimeout(function() { moveToLocation(map, endLat, endLng); }, 8500);
-			setTimeout(function() { moveToLocation(map, middleLat, middleLng); }, 10000);
-
-		} else {
-			alert('Geocode was not successful for the following reason: ' + status);
-		}
-	});
+function searchingAnimation(map, start_lat, start_lng, end_lat, end_lng){
+	middle_lat = (start_lat + end_lat)/2
+	middle_lng = (start_lng + end_lng)/2
+	
+	setTimeout(function() { newZoom(map, 3); }, 1000);
+	setTimeout(function() { moveToLocation(map, start_lat, start_lng); }, 2500);
+	setTimeout(function() { newZoom(map, 5); }, 4000);
+	setTimeout(function() { moveToLocation(map, middle_lat, middle_lng); }, 5500);
+	setTimeout(function() { newZoom(map, 4); }, 7000);
+	setTimeout(function() { moveToLocation(map, end_lat, end_lng); }, 8500);
+	setTimeout(function() { moveToLocation(map, middle_lat, middle_lng); }, 10000);
 }
 
 function moveToLocation(map, lat, lng){
@@ -237,18 +371,18 @@ function find_second_closest_hub( lat1, lng1 ) {
 
 }
 
-function getDist(startLat,startLng,endLat,endLng) {
+function getDist(start_lat,start_lng,end_lat,end_lng) {
 	var pi = Math.PI;
 	var R = 6371; //equatorial radius
 
-	var chLat = endLat-startLat;
-	var chLng = endLng-startLng;
+	var chLat = end_lat-start_lat;
+	var chLng = end_lng-start_lng;
 
 	var dLat = chLat*(pi/180);
 	var dLng = chLng*(pi/180);
 
-	var rLat1 = startLat*(pi/180);
-	var rLat2 = endLat*(pi/180);
+	var rLat1 = start_lat*(pi/180);
+	var rLat2 = end_lat*(pi/180);
 
 	var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.sin(dLng/2) * Math.sin(dLng/2) * Math.cos(rLat1) * Math.cos(rLat2); 
 	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
@@ -271,353 +405,324 @@ function round(value, precision) {
 	return Math.round(value * multiplier) / multiplier;
 }
 
-function getDirections(map, directionsService, directionsDisplay, end_address, route_details, loaded_total, unloaded_total) {
-	var geocoder = new google.maps.Geocoder();
-	geocoder.geocode({'address': end_address}, function(results, status) {
-		if (status === 'OK') {
-			destination = results[0].address_components[0].short_name + ", " + results[0].address_components[2].short_name;
-			endHubReq = false;
-			startLat = 36.1699;
-			startLng = -115.1398;
-			endLat = results[0].geometry.location.lat();
-			endLng = results[0].geometry.location.lng();
-			
-			startHub = find_closest_hub(startLat, startLng); //returns nearest Hub to origin
-			endHub = find_closest_hub(endLat, endLng); //returns nearest Hub to destination
+function getDirections(map, directionsService, directionsDisplay, start_address, start_lat, start_lng, end_address, end_lat, end_lng, route_details, loaded_total, unloaded_total) {
+	endHubReq = false;
+	
+	startHub = find_closest_hub(start_lat, start_lng); //returns nearest Hub to origin
+	endHub = find_closest_hub(end_lat, end_lng); //returns nearest Hub to destination
 
-			var waypts = [];
+	var waypts = [];
 
+	console.log(startHub.name)
+	console.log(start_address)
+	if (startHub.name != start_address) {
+		waypts.push({
+			location: startHub.name,
+			stopover: true
+		});
+	} else {
+		startHub = find_second_closest_hub(start_lat,start_lng)
+		console.log(startHub.name)
+		waypts.push({
+			location: startHub.name,
+			stopover: true
+		});
+	}
+
+	d = getDist(start_lat,start_lng,end_lat,end_lng)
+	if (d > 1200 && d <= 2400) {
+		endHubReq = true;
+		middle_lat = (start_lat + end_lat)/2;
+		middle_lng = (start_lng + end_lng)/2;
+
+		waypts.push({
+			location: find_closest_hub(middle_lat,middle_lng).name,
+			stopover: true
+		});
+		waypts.push({
+			location: find_second_closest_hub(middle_lat,middle_lng).name,
+			stopover: true
+		});
+	} else if (d > 2400) {
+		endHubReq = true;
+		first_middle_lat = (start_lat*2 + end_lat)/3;
+		first_middle_lng = (start_lng*2 + end_lng)/3;
+		second_middle_lat = (start_lat + end_lat*2)/3;
+		second_middle_lng = (start_lng + end_lng*2)/3;
+
+		waypts.push({
+			location: find_closest_hub(first_middle_lat,first_middle_lng).name,
+			stopover: true
+		});
+		waypts.push({
+			location: find_second_closest_hub(first_middle_lat,first_middle_lng).name,
+			stopover: true
+		});
+
+		waypts.push({
+			location: find_closest_hub(second_middle_lat,second_middle_lng).name,
+			stopover: true
+		});
+		waypts.push({
+			location: find_second_closest_hub(second_middle_lat,second_middle_lng).name,
+			stopover: true
+		});
+	}
+
+	if (endHub.name != end_address) {
+		if (endHubReq == true) {
 			waypts.push({
-				location: startHub.name,
+				location: endHub.name,
 				stopover: true
 			});
-		
-			d = getDist(startLat,startLng,endLat,endLng)
-			if (d > 1200 && d <= 2400) {
-				endHubReq = true;
-				middleLat = (startLat + endLat)/2;
-				middleLng = (startLng + endLng)/2;
+		}
+	}	
+	
+	var request = {
+		origin: new google.maps.LatLng(start_lat,start_lng),
+		destination: end_address,
+		waypoints: waypts,
+		optimizeWaypoints: true,
+		travelMode: google.maps.TravelMode.DRIVING
+	};
 
-				waypts.push({
-					location: find_closest_hub(middleLat,middleLng).name,
-					stopover: true
-				});
-				waypts.push({
-					location: find_second_closest_hub(middleLat,middleLng).name,
-					stopover: true
-				});
-			} else if (d > 2400) {
-				endHubReq = true;
-				firstMidLat = (startLat*2 + endLat)/3;
-				firstMidLng = (startLng*2 + endLng)/3;
-				secondMidLat = (startLat + endLat*2)/3;
-				secondMidLng = (startLng + endLng*2)/3;
+	directionsService.route(request, function(result, status) {
+		if (status == google.maps.DirectionsStatus.OK) {
+			directionsDisplay.setDirections(result);
+			var innerHTML = "";
+			var loadedTotal = 0;
+			var unloadedTotal = 0;
+			computeTotalDistance(result);
+			
 
-				waypts.push({
-					location: find_closest_hub(firstMidLat,firstMidLng).name,
-					stopover: true
-				});
-				waypts.push({
-					location: find_second_closest_hub(firstMidLat,firstMidLng).name,
-					stopover: true
-				});
+			if (route_details.id == "details-mobile") {
+				for (var k = 0; k < waypts.length; k++) {
+					if (k == 0 && k == ((waypts.length)-1)) {
+						innerHTML += "Deadhead from " + start_address + " to " + waypts[k].location + " <span class=\"text-bulky-red text-semi-bold\"><br>("+result.routes[0].legs[k].distance.text+")"+"</span><br>"
+						innerHTML += "Loaded from "+ waypts[k].location +" to " + end_address  + " <span class=\"text-bulky-blue text-semi-bold\"><br>("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
+						unloadedTotal += result.routes[0].legs[k].distance.value;
+						loadedTotal += result.routes[0].legs[k+1].distance.value;
+					} else if (k == 0) {
+						unloadedTotal += result.routes[0].legs[k].distance.value;
+						innerHTML += "Deadhead from " + start_address + " to " + waypts[k].location + " <span class=\"text-bulky-red text-semi-bold\"><br>("+result.routes[0].legs[k].distance.text+")"+"</span><br>"
+						innerHTML += "Loaded from "+ waypts[k].location +" to " + waypts[k+1].location + " <span class=\"text-bulky-blue text-semi-bold\"><br>("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
+					} else if (k == ((waypts.length)-1)) {
+						if (Math.round(k/2)==k/2) {
+							unloadedTotal += result.routes[0].legs[k].distance.value;
+							loadedTotal += result.routes[0].legs[k+1].distance.value;
+							innerHTML += "Loaded from " + waypts[k].location +" to " + end_address + " <span class=\"text-bulky-blue text-semi-bold\"><br>("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
+						} else {
+							loadedTotal += result.routes[0].legs[k].distance.value;
+							unloadedTotal += result.routes[0].legs[k+1].distance.value;
+							innerHTML += "Deadhead from "+ waypts[k].location +" to " + end_address + " <span class=\"text-bulky-red text-semi-bold\"><br>("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
+						}
+					} else if (Math.round(k/2)!=k/2) {
+						loadedTotal += result.routes[0].legs[k].distance.value;
+						innerHTML += "Deadhead from " + waypts[k].location +" to " + waypts[k+1].location + " <span class=\"text-bulky-red text-semi-bold\"><br>("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
+					} else {
+						unloadedTotal += result.routes[0].legs[k].distance.value;
+						innerHTML += "Loaded from "+ waypts[k].location +" to " + waypts[k+1].location + " <span class=\"text-bulky-blue text-semi-bold\"><br>("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
+					}
+				}
+			} else {
+				console.log(waypts)
+				for (var k = 0; k < waypts.length; k++) {
+					console.log(k)
+					if (k == 0 && k == ((waypts.length)-1)) {
+						console.log("Case 1")
+						innerHTML += "Deadhead from " + start_address + " to " + waypts[k].location + " <span class=\"text-bulky-red text-semi-bold\">("+result.routes[0].legs[k].distance.text+")"+"</span><br>"
+						innerHTML += "Loaded from "+ waypts[k].location +" to " + end_address  + " <span class=\"text-bulky-blue text-semi-bold\">("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
+						unloadedTotal += result.routes[0].legs[k].distance.value;
+						loadedTotal += result.routes[0].legs[k+1].distance.value;
+					} else if (k == 0) {
+						console.log("Case 2")
+						unloadedTotal += result.routes[0].legs[k].distance.value;
+						innerHTML += "Deadhead from " + start_address + " to " + waypts[k].location + " <span class=\"text-bulky-red text-semi-bold\">("+result.routes[0].legs[k].distance.text+")"+"</span><br>"
+						innerHTML += "Loaded from "+ waypts[k].location +" to " + waypts[k+1].location + " <span class=\"text-bulky-blue text-semi-bold\">("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
+					} else if (k == ((waypts.length)-1)) {
+						if (Math.round(k/2)==k/2) {
+							console.log("Case 3")
+							unloadedTotal += result.routes[0].legs[k].distance.value;
+							loadedTotal += result.routes[0].legs[k+1].distance.value;
+							innerHTML += "Loaded from " + waypts[k].location +" to " + end_address + " <span class=\"text-bulky-blue text-semi-bold\">("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
+						} else {
+							console.log("Case 4")
+							loadedTotal += result.routes[0].legs[k].distance.value;
+							unloadedTotal += result.routes[0].legs[k+1].distance.value;
+							innerHTML += "Deadhead from "+ waypts[k].location +" to " + end_address + " <span class=\"text-bulky-red text-semi-bold\">("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
+						}
+					} else if (Math.round(k/2)!=k/2) {
+						console.log("Case 5")
+						loadedTotal += result.routes[0].legs[k].distance.value;
+						innerHTML += "Deadhead from " + waypts[k].location +" to " + waypts[k+1].location + " <span class=\"text-bulky-red text-semi-bold\">("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
+					} else {
+						console.log("Case 6")
+						unloadedTotal += result.routes[0].legs[k].distance.value;
+						innerHTML += "Loaded from "+ waypts[k].location +" to " + waypts[k+1].location + " <span class=\"text-bulky-blue text-semi-bold\">("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
+					}
+				}
+			}
 
-				waypts.push({
-					location: find_closest_hub(secondMidLat,secondMidLng).name,
-					stopover: true
-				});
-				waypts.push({
-					location: find_second_closest_hub(secondMidLat,secondMidLng).name,
-					stopover: true
+			route_details.innerHTML = "<div data-w-id=\"34af2989-14bc-d845-b530-a2bd6b6af1d9\" class=\"text-body text-left margin-top-15\">"+innerHTML+"</div>"
+			loaded_total.innerHTML = "<h4 class=\"subheading margins-0 text-bulky-blue\">"+round(loadedTotal*0.000621371192, 1)+" mi</h4>"
+			unloaded_total.innerHTML = "<div class=\"loading-total-distance text-bulky-red\">"+round(unloadedTotal*0.000621371192,1)+" mi</div>"
+
+			var my_route = result.routes[0];
+
+			for (var i = 0; i < my_route.legs.length; i++) {
+				var marker = new google.maps.Marker({
+					animation: google.maps.Animation.DROP,
+					position: my_route.legs[i].start_location,
+					label: "",
+					map: map
 				});
 			}
 
-			addressComponents = results[0].address_components;
-			enteredCity = "";
-			addressComponents.forEach(addrComp => {
-				if (addrComp.types[0] == "locality") {
-					enteredCity += addrComp.long_name;
-				}
-				if (addrComp.types[0] == "administrative_area_level_1") {
-					enteredCity += ", " + addrComp.short_name;
-				}
+			var marker = new google.maps.Marker({
+				position: my_route.legs[i-1].end_location,
+				label: "",
+				map: map
 			});
 
-			if (endHub.name != enteredCity) {
-				if (endHubReq == true) {
-					waypts.push({
-						location: endHub.name,
-						stopover: true
-					});
-				}
-			}	
-			
-			var request = {
-				origin: new google.maps.LatLng(startLat,startLng),
-				destination: end_address,
-				waypoints: waypts,
-				optimizeWaypoints: true,
-				travelMode: google.maps.TravelMode.DRIVING
-			};
-		
-			directionsService.route(request, function(result, status) {
-				if (status == google.maps.DirectionsStatus.OK) {
-					directionsDisplay.setDirections(result);
-					var innerHTML = "";
-					var loadedTotal = 0;
-					var unloadedTotal = 0;
-					computeTotalDistance(result);
+			// autoRefresh(map, result);
+
+			var colors = ["#f37b6e", "#32aef2", "#f37b6e", "#32aef2", "#f37b6e", "#32aef2"];
+			var strokeWeight = [6,2,6,2,6,2]
+			var polylines = [];
+			var bounds = new google.maps.LatLngBounds();
+			for (var i = 0; i < polylines.length; i++) {
+				polylines[i].setMap(null);
+			}
+			var legs = result.routes[0].legs;
+			for (i = 0; i < legs.length; i++) {
+				var steps = legs[i].steps;
+				for (j = 0; j < steps.length; j++) {
+					var nextSegment = steps[j].path;
 					
-
-					if (route_details.id == "details-mobile") {
-						for (var k = 0; k < waypts.length; k++) {
-							if (k == 0 && k == ((waypts.length)-1)) {
-								innerHTML += "Deadhead from Las Vegas, NV to " + waypts[k].location + " <span class=\"text-bulky-red text-semi-bold\"><br>("+result.routes[0].legs[k].distance.text+")"+"</span><br>"
-								innerHTML += "Loaded from "+ waypts[k].location +" to " + destination  + " <span class=\"text-bulky-blue text-semi-bold\"><br>("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
-								unloadedTotal += result.routes[0].legs[k].distance.value;
-								loadedTotal += result.routes[0].legs[k+1].distance.value;
-							} else if (k == 0) {
-								unloadedTotal += result.routes[0].legs[k].distance.value;
-								innerHTML += "Deadhead from Las Vegas, NV to " + waypts[k].location + " <span class=\"text-bulky-red text-semi-bold\"><br>("+result.routes[0].legs[k].distance.text+")"+"</span><br>"
-								innerHTML += "Loaded from "+ waypts[k].location +" to " + waypts[k+1].location + " <span class=\"text-bulky-blue text-semi-bold\"><br>("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
-							} else if (k == ((waypts.length)-1)) {
-								if (Math.round(k/2)==k/2) {
-									unloadedTotal += result.routes[0].legs[k].distance.value;
-									loadedTotal += result.routes[0].legs[k+1].distance.value;
-									innerHTML += "Loaded from " + waypts[k].location +" to " + destination + " <span class=\"text-bulky-blue text-semi-bold\"><br>("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
-								} else {
-									loadedTotal += result.routes[0].legs[k].distance.value;
-									unloadedTotal += result.routes[0].legs[k+1].distance.value;
-									innerHTML += "Deadhead from "+ waypts[k].location +" to " + destination + " <span class=\"text-bulky-red text-semi-bold\"><br>("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
-								}
-							} else if (Math.round(k/2)!=k/2) {
-								loadedTotal += result.routes[0].legs[k].distance.value;
-								innerHTML += "Deadhead from " + waypts[k].location +" to " + waypts[k+1].location + " <span class=\"text-bulky-red text-semi-bold\"><br>("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
-							} else {
-								unloadedTotal += result.routes[0].legs[k].distance.value;
-								innerHTML += "Loaded from "+ waypts[k].location +" to " + waypts[k+1].location + " <span class=\"text-bulky-blue text-semi-bold\"><br>("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
-							}
-						}
-					} else {
-						for (var k = 0; k < waypts.length; k++) {
-							if (k == 0 && k == ((waypts.length)-1)) {
-								innerHTML += "Deadhead from Las Vegas, NV to " + waypts[k].location + " <span class=\"text-bulky-red text-semi-bold\">("+result.routes[0].legs[k].distance.text+")"+"</span><br>"
-								innerHTML += "Loaded from "+ waypts[k].location +" to " + destination  + " <span class=\"text-bulky-blue text-semi-bold\">("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
-								unloadedTotal += result.routes[0].legs[k].distance.value;
-								loadedTotal += result.routes[0].legs[k+1].distance.value;
-							} else if (k == 0) {
-								unloadedTotal += result.routes[0].legs[k].distance.value;
-								innerHTML += "Deadhead from Las Vegas, NV to " + waypts[k].location + " <span class=\"text-bulky-red text-semi-bold\">("+result.routes[0].legs[k].distance.text+")"+"</span><br>"
-								innerHTML += "Loaded from "+ waypts[k].location +" to " + waypts[k+1].location + " <span class=\"text-bulky-blue text-semi-bold\">("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
-							} else if (k == ((waypts.length)-1)) {
-								if (Math.round(k/2)==k/2) {
-									unloadedTotal += result.routes[0].legs[k].distance.value;
-									loadedTotal += result.routes[0].legs[k+1].distance.value;
-									innerHTML += "Loaded from " + waypts[k].location +" to " + destination + " <span class=\"text-bulky-blue text-semi-bold\">("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
-								} else {
-									loadedTotal += result.routes[0].legs[k].distance.value;
-									unloadedTotal += result.routes[0].legs[k+1].distance.value;
-									innerHTML += "Deadhead from "+ waypts[k].location +" to " + destination + " <span class=\"text-bulky-red text-semi-bold\">("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
-								}
-							} else if (Math.round(k/2)!=k/2) {
-								loadedTotal += result.routes[0].legs[k].distance.value;
-								innerHTML += "Deadhead from " + waypts[k].location +" to " + waypts[k+1].location + " <span class=\"text-bulky-red text-semi-bold\">("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
-							} else {
-								unloadedTotal += result.routes[0].legs[k].distance.value;
-								innerHTML += "Loaded from "+ waypts[k].location +" to " + waypts[k+1].location + " <span class=\"text-bulky-blue text-semi-bold\">("+result.routes[0].legs[k+1].distance.text+")"+"</span><br>"
-							}
-						}
-					}
-
-					route_details.innerHTML = "<div data-w-id=\"34af2989-14bc-d845-b530-a2bd6b6af1d9\" class=\"text-body text-left margin-top-15\">"+innerHTML+"</div>"
-					loaded_total.innerHTML = "<h4 class=\"subheading margins-0 text-bulky-blue\">"+round(loadedTotal*0.000621371192, 1)+" mi</h4>"
-					unloaded_total.innerHTML = "<div class=\"loading-total-distance text-bulky-red\">"+round(unloadedTotal*0.000621371192,1)+" mi</div>"
-
-					var my_route = result.routes[0];
-
-					for (var i = 0; i < my_route.legs.length; i++) {
-						var marker = new google.maps.Marker({
-							animation: google.maps.Animation.DROP,
-							position: my_route.legs[i].start_location,
-							label: "",
-							map: map
-						});
-					}
-
-					var marker = new google.maps.Marker({
-						position: my_route.legs[i-1].end_location,
-						label: "",
-						map: map
+						var stepPolyline = new google.maps.Polyline({
+							path: [],
+							geodesic : true,
+							strokeColor: colors[i],
+							strokeOpacity: 1.0,
+							strokeWeight: strokeWeight[i],
+							editable: false,
+							map:map
 					});
 
-					// autoRefresh(map, result);
-
-					var colors = ["#f37b6e", "#32aef2", "#f37b6e", "#32aef2", "#f37b6e", "#32aef2"];
-					var strokeWeight = [6,2,6,2,6,2]
-					var polylines = [];
-					var bounds = new google.maps.LatLngBounds();
-					for (var i = 0; i < polylines.length; i++) {
-						polylines[i].setMap(null);
+						var stepPolylineGlow = new google.maps.Polyline({
+							path: [],
+							geodesic : true,
+							strokeColor: '#FFFFFF',
+							strokeOpacity: 0.4,
+							strokeWeight: (strokeWeight[i]+1),
+							editable: false,
+							map:map
+						});
+					
+					for (k = 0; k < nextSegment.length; k++) {
+						stepPolyline.getPath().push(nextSegment[k]);
+						bounds.extend(nextSegment[k]);
 					}
-					var legs = result.routes[0].legs;
-					for (i = 0; i < legs.length; i++) {
-						var steps = legs[i].steps;
-						for (j = 0; j < steps.length; j++) {
-							var nextSegment = steps[j].path;
-							
-								var stepPolyline = new google.maps.Polyline({
-									path: [],
-									geodesic : true,
-									strokeColor: colors[i],
-									strokeOpacity: 1.0,
-									strokeWeight: strokeWeight[i],
-									editable: false,
-									map:map
-							});
-
-								var stepPolylineGlow = new google.maps.Polyline({
-									path: [],
-									geodesic : true,
-									strokeColor: '#FFFFFF',
-									strokeOpacity: 0.4,
-									strokeWeight: (strokeWeight[i]+1),
-									editable: false,
-									map:map
-								});
-							
-							for (k = 0; k < nextSegment.length; k++) {
-								stepPolyline.getPath().push(nextSegment[k]);
-								bounds.extend(nextSegment[k]);
-							}
-							polylines.push(stepPolyline);
-							stepPolyline.setMap(map);
-						}
-					}
-					map.fitBounds(bounds);
-
+					polylines.push(stepPolyline);
+					stepPolyline.setMap(map);
 				}
-			});
-
-		} else {
-
-			alert('Geocode was not successful for the following reason: ' + status);
+			}
+			map.fitBounds(bounds);
 
 		}
-
-		return endLocation = results[0].geometry.location.lat()+","+results[0].geometry.location.lng();
-
-	});	
+	});
 }
 
-function getShipperDirections(map, directionsService, directionsDisplay, end_address, result_details, number_of_carriers, estimated_total) {
-	var geocoder = new google.maps.Geocoder();
-	geocoder.geocode({'address': end_address}, function(results, status) {
-		if (status === 'OK') {
-			destination = results[0].address_components[0].short_name + ", " + results[0].address_components[2].short_name;
-			endHubReq = false;
-			startLat = 36.1699;
-			startLng = -115.1398;
-			endLat = results[0].geometry.location.lat();
-			endLng = results[0].geometry.location.lng();
-		
-			d = getDist(startLat,startLng,endLat,endLng);
+function getShipperDirections(map, directionsService, directionsDisplay, start_address, start_lat, start_lng, end_address, end_lat, end_lng, result_details, number_of_carriers, estimated_total) {
+	d = getDist(start_lat,start_lng,end_lat,end_lng);
 
-			num_carriers = Math.floor(Math.random() * 3) + 1
+	num_carriers = Math.floor(Math.random() * 3) + 1
 
-			low_cost_mile = Math.random()/2 + 2.01
+	low_cost_mile = Math.random()/2 + 2.01
 
-			high_cost_mile = Math.random()/2 + 2.61
-			
-			var request = {
-				origin: new google.maps.LatLng(startLat,startLng),
-				destination: end_address,
-				travelMode: google.maps.TravelMode.DRIVING
-			};
-		
-			directionsService.route(request, function(result, status) {
-				if (status == google.maps.DirectionsStatus.OK) {
-					directionsDisplay.setDirections(result);
-					computeTotalDistance(result);
+	high_cost_mile = Math.random()/2 + 2.61
+	console.log('1')
+	var request = {
+		origin: new google.maps.LatLng(start_lat,start_lng),
+		destination: end_address,
+		travelMode: google.maps.TravelMode.DRIVING
+	};
+	console.log('2')
+	directionsService.route(request, function(result, status) {
+		console.log('3')
+		if (status == google.maps.DirectionsStatus.OK) {
+			directionsDisplay.setDirections(result);
+			computeTotalDistance(result);
 
-					document.getElementById('label-mobile').innerHTML = "<div id=\"label-mobile\" class=\"text-body text-large\">Match Details</div>"
-					number_of_carriers.innerHTML = "<div id=\"number-of-carriers-desktop\" class=\"number-of-carriers text-bulky-blue\">" + num_carriers + "</div>"
-					estimated_total.innerHTML = "<div id=\"estimated-total-desktop\" class=\"estimated-total text-bulky-blue\">$" + round(d*low_cost_mile) + " - $"+round(d*high_cost_mile)+"</div>"
-					result_details.innerHTML = "<div data-w-id=\"34af2989-14bc-d845-b530-a2bd6b6af1d9\" class=\"text-body text-left margin-top-15\">Total Distance: " + round(d/1.60934,1) + " mi<br><br>" + "Low cost/mile: $" + parseFloat(round(low_cost_mile,2).toFixed(2))  + "<br>High cost/mile: $" + parseFloat(round(high_cost_mile,2).toFixed(2)) + "</div>"
+			document.getElementById('label-mobile').innerHTML = "<div id=\"label-mobile\" class=\"text-body text-large\">Match Details</div>"
+			number_of_carriers.innerHTML = "<div id=\"number-of-carriers-desktop\" class=\"number-of-carriers text-bulky-blue\">" + num_carriers + "</div>"
+			estimated_total.innerHTML = "<div id=\"estimated-total-desktop\" class=\"estimated-total text-bulky-blue\">$" + round(d*low_cost_mile) + " - $"+round(d*high_cost_mile)+"</div>"
+			result_details.innerHTML = "<div data-w-id=\"34af2989-14bc-d845-b530-a2bd6b6af1d9\" class=\"text-body text-left margin-top-15\">Total Distance: " + round(d/1.60934,1) + " mi<br><br>" + "Low cost/mile: $" + parseFloat(round(low_cost_mile,2).toFixed(2))  + "<br>High cost/mile: $" + parseFloat(round(high_cost_mile,2).toFixed(2)) + "</div>"
 
-					var my_route = result.routes[0];
+			var my_route = result.routes[0];
 
-					for (var i = 0; i < my_route.legs.length; i++) {
-						var marker = new google.maps.Marker({
-							animation: google.maps.Animation.DROP,
-							position: my_route.legs[i].start_location,
-							label: "",
-							map: map
-						});
-					}
+			for (var i = 0; i < my_route.legs.length; i++) {
+				var marker = new google.maps.Marker({
+					animation: google.maps.Animation.DROP,
+					position: my_route.legs[i].start_location,
+					label: "",
+					map: map
+				});
+			}
 
-					var marker = new google.maps.Marker({
-						position: my_route.legs[i-1].end_location,
-						label: "",
-						map: map
-					});
-
-					// autoRefresh(map, result);
-
-					var colors = ["#32aef2", "#f37b6e", "#32aef2", "#f37b6e", "#32aef2"];
-					var strokeWeight = [6,2,6,2,6,2]
-					var polylines = [];
-					var bounds = new google.maps.LatLngBounds();
-					for (var i = 0; i < polylines.length; i++) {
-						polylines[i].setMap(null);
-					}
-					var legs = result.routes[0].legs;
-					for (i = 0; i < legs.length; i++) {
-						var steps = legs[i].steps;
-						for (j = 0; j < steps.length; j++) {
-							var nextSegment = steps[j].path;
-							
-								var stepPolyline = new google.maps.Polyline({
-									path: [],
-									geodesic : true,
-									strokeColor: colors[i],
-									strokeOpacity: 1.0,
-									strokeWeight: strokeWeight[i],
-									editable: false,
-									map:map
-							});
-
-								var stepPolylineGlow = new google.maps.Polyline({
-									path: [],
-									geodesic : true,
-									strokeColor: '#FFFFFF',
-									strokeOpacity: 0.4,
-									strokeWeight: (strokeWeight[i]+1),
-									editable: false,
-									map:map
-								});
-							
-							for (k = 0; k < nextSegment.length; k++) {
-								stepPolyline.getPath().push(nextSegment[k]);
-								bounds.extend(nextSegment[k]);
-							}
-							polylines.push(stepPolyline);
-							stepPolyline.setMap(map);
-						}
-					}
-					map.fitBounds(bounds);
-
-				}
+			var marker = new google.maps.Marker({
+				position: my_route.legs[i-1].end_location,
+				label: "",
+				map: map
 			});
 
-		} else {
+			// autoRefresh(map, result);
 
-			alert('Geocode was not successful for the following reason: ' + status);
+			var colors = ["#32aef2", "#f37b6e", "#32aef2", "#f37b6e", "#32aef2"];
+			var strokeWeight = [6,2,6,2,6,2]
+			var polylines = [];
+			var bounds = new google.maps.LatLngBounds();
+			for (var i = 0; i < polylines.length; i++) {
+				polylines[i].setMap(null);
+			}
+			var legs = result.routes[0].legs;
+			for (i = 0; i < legs.length; i++) {
+				var steps = legs[i].steps;
+				for (j = 0; j < steps.length; j++) {
+					var nextSegment = steps[j].path;
+					
+						var stepPolyline = new google.maps.Polyline({
+							path: [],
+							geodesic : true,
+							strokeColor: colors[i],
+							strokeOpacity: 1.0,
+							strokeWeight: strokeWeight[i],
+							editable: false,
+							map:map
+					});
+
+						var stepPolylineGlow = new google.maps.Polyline({
+							path: [],
+							geodesic : true,
+							strokeColor: '#FFFFFF',
+							strokeOpacity: 0.4,
+							strokeWeight: (strokeWeight[i]+1),
+							editable: false,
+							map:map
+						});
+					
+					for (k = 0; k < nextSegment.length; k++) {
+						stepPolyline.getPath().push(nextSegment[k]);
+						bounds.extend(nextSegment[k]);
+					}
+					polylines.push(stepPolyline);
+					stepPolyline.setMap(map);
+				}
+			}
+			map.fitBounds(bounds);
 
 		}
-
-		return endLocation = results[0].geometry.location.lat()+","+results[0].geometry.location.lng();
-
-	});	
+	});
 }
 
 //google.maps.event.addDomListener(window, 'load', initMap);
