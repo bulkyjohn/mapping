@@ -27,16 +27,16 @@ function initMap() {
 		var route_details = document.getElementById('route-details-desktop');
 		var loaded_total = document.getElementById('loaded-total-desktop');
 		var unloaded_total = document.getElementById('unloaded-total-desktop');
-		var address = document.getElementById('carrier-end-desktop').value;
-		geocoder.geocode({'address': address}, function(results, status) {
+		var end_address = document.getElementById('carrier-end-desktop').value;
+		geocoder.geocode({'address': end_address}, function(results, status) {
 			if (status === 'OK') {
 				document.getElementById('carrier-submit-desktop').click();
 				var map = new google.maps.Map(document.getElementById("map-desktop"), mapOptions);
-				directionsDisplay.setMap(map, address);
-				searchingAnimation(map, address);
+				directionsDisplay.setMap(map, end_address);
+				searchingAnimation(map, end_address);
 				setTimeout(func, 9000);
 				function func() {
-					getDirections(map, directionsService, directionsDisplay, address, route_details, loaded_total, unloaded_total);
+					getDirections(map, directionsService, directionsDisplay, end_address, route_details, loaded_total, unloaded_total);
 				}
 			} else if (status === "INVALID_REQUEST") {
 				swal("Invalid Location","Please enter a different destination.","warning");
@@ -51,16 +51,16 @@ function initMap() {
 		var result_details = document.getElementById('result-details-desktop');
 		var number_of_carriers = document.getElementById('number-of-carriers-desktop');
 		var estimated_total = document.getElementById('estimated-total-desktop');
-		var address = document.getElementById('shipper-end-desktop').value;
-		geocoder.geocode({'address': address}, function(results, status) {
+		var end_address = document.getElementById('shipper-end-desktop').value;
+		geocoder.geocode({'address': end_address}, function(results, status) {
 			if (status === 'OK') {
 				document.getElementById('shipper-submit-desktop').click();
 				var map = new google.maps.Map(document.getElementById("map-desktop"), mapOptions);
-				directionsDisplay.setMap(map, address);
-				searchingAnimation(map, address);
+				directionsDisplay.setMap(map, end_address);
+				searchingAnimation(map, end_address);
 				setTimeout(func, 9000);
 				function func() {
-					getShipperDirections(map, directionsService, directionsDisplay, address, result_details, number_of_carriers, estimated_total);
+					getShipperDirections(map, directionsService, directionsDisplay, end_address, result_details, number_of_carriers, estimated_total);
 				}
 			} else if (status === "INVALID_REQUEST") {
 				swal("Invalid Location","Please enter a different destination.","warning");
@@ -75,16 +75,16 @@ function initMap() {
 		var route_details = document.getElementById('details-mobile');
 		var loaded_total = document.getElementById('loaded-total-c-mobile');
 		var unloaded_total = document.getElementById('unloaded-total-c-mobile');
-		var address = document.getElementById('carrier-end-mobile').value;
-		geocoder.geocode({'address': address}, function(results, status) {
+		var end_address = document.getElementById('carrier-end-mobile').value;
+		geocoder.geocode({'address': end_address}, function(results, status) {
 			if (status === 'OK') {
 				document.getElementById('carrier-submit-mobile').click();
 				var map = new google.maps.Map(document.getElementById("map-c-mobile"), mapOptions);
-				directionsDisplay.setMap(map, address);
-				searchingAnimation(map, address);
+				directionsDisplay.setMap(map, end_address);
+				searchingAnimation(map, end_address);
 				setTimeout(func, 9000);
 				function func() {
-					getDirections(map, directionsService, directionsDisplay, address, route_details, loaded_total, unloaded_total);
+					getDirections(map, directionsService, directionsDisplay, end_address, route_details, loaded_total, unloaded_total);
 				}
 			} else if (status === "INVALID_REQUEST") {
 				swal("Invalid Location","Please enter a different destination.","warning");
@@ -99,16 +99,16 @@ function initMap() {
 		var result_details = document.getElementById('details-mobile');
 		var number_of_carriers = document.getElementById('number-of-carriers-mobile');
 		var estimated_total = document.getElementById('estimated-total-mobile');
-		var address = document.getElementById('shipper-end-mobile').value;
-		geocoder.geocode({'address': address}, function(results, status) {
+		var end_address = document.getElementById('shipper-end-mobile').value;
+		geocoder.geocode({'address': end_address}, function(results, status) {
 			if (status === 'OK') {
 				document.getElementById('shipper-submit-mobile').click();
 				var map = new google.maps.Map(document.getElementById("map-s-mobile"), mapOptions);
-				directionsDisplay.setMap(map, address);
-				searchingAnimation(map, address);
+				directionsDisplay.setMap(map, end_address);
+				searchingAnimation(map, end_address);
 				setTimeout(func, 9000);
 				function func() {
-					getShipperDirections(map, directionsService, directionsDisplay, address, result_details, number_of_carriers, estimated_total);
+					getShipperDirections(map, directionsService, directionsDisplay, end_address, result_details, number_of_carriers, estimated_total);
 				}
 			} else if (status === "INVALID_REQUEST") {
 				swal("Invalid Location","Please enter a different destination.","warning");
@@ -148,9 +148,9 @@ function getLatLng(addr, f){
 	return -1;
 }
 
-function searchingAnimation(map, address){
+function searchingAnimation(map, end_address){
 	var geocoder = new google.maps.Geocoder();
-	geocoder.geocode({'address': address}, function(results, status) {
+	geocoder.geocode({'address': end_address}, function(results, status) {
 		if (status === 'OK') {
 			destination = results[0].address_components[0].short_name + ", " + results[0].address_components[2].short_name;
 			endHubReq = false;
@@ -271,9 +271,9 @@ function round(value, precision) {
 	return Math.round(value * multiplier) / multiplier;
 }
 
-function getDirections(map, directionsService, directionsDisplay, address, route_details, loaded_total, unloaded_total) {
+function getDirections(map, directionsService, directionsDisplay, end_address, route_details, loaded_total, unloaded_total) {
 	var geocoder = new google.maps.Geocoder();
-	geocoder.geocode({'address': address}, function(results, status) {
+	geocoder.geocode({'address': end_address}, function(results, status) {
 		if (status === 'OK') {
 			destination = results[0].address_components[0].short_name + ", " + results[0].address_components[2].short_name;
 			endHubReq = false;
@@ -354,7 +354,7 @@ function getDirections(map, directionsService, directionsDisplay, address, route
 			
 			var request = {
 				origin: new google.maps.LatLng(startLat,startLng),
-				destination: address,
+				destination: end_address,
 				waypoints: waypts,
 				optimizeWaypoints: true,
 				travelMode: google.maps.TravelMode.DRIVING
@@ -509,9 +509,9 @@ function getDirections(map, directionsService, directionsDisplay, address, route
 	});	
 }
 
-function getShipperDirections(map, directionsService, directionsDisplay, address, result_details, number_of_carriers, estimated_total) {
+function getShipperDirections(map, directionsService, directionsDisplay, end_address, result_details, number_of_carriers, estimated_total) {
 	var geocoder = new google.maps.Geocoder();
-	geocoder.geocode({'address': address}, function(results, status) {
+	geocoder.geocode({'address': end_address}, function(results, status) {
 		if (status === 'OK') {
 			destination = results[0].address_components[0].short_name + ", " + results[0].address_components[2].short_name;
 			endHubReq = false;
@@ -530,7 +530,7 @@ function getShipperDirections(map, directionsService, directionsDisplay, address
 			
 			var request = {
 				origin: new google.maps.LatLng(startLat,startLng),
-				destination: address,
+				destination: end_address,
 				travelMode: google.maps.TravelMode.DRIVING
 			};
 		
